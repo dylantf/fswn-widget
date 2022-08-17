@@ -82,7 +82,7 @@ export const App: React.FC = () => {
           transform: `rotate(${windDir}deg)`,
         }}
       />
-      <div style={{ fontSize: "18pt", marginTop: "10px" }}>
+      <div style={{ fontSize: "18pt", marginTop: "20px" }}>
         <strong title={`${windDir}°`}>{formatDirection(windDir)}</strong>{" "}
         <strong>{curAvg}</strong>
         {curAvg !== curHi && (
