@@ -29,8 +29,10 @@ export const App: React.FC = () => {
     }, REFRESH_INTERVAL);
 
     return () => {
-      window.clearInterval(reloadDataInterval);
-      reloadDataInterval = null;
+      if (reloadDataInterval) {
+        window.clearInterval(reloadDataInterval);
+        reloadDataInterval = null;
+      }
     };
   }, []);
 
