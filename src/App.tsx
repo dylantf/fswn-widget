@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 
 import { Conditions, loadData } from "./api";
 
-const REFRESH_INTERVAL = 1000 * 30; // milliseconds
+const REFRESH_INTERVAL = 1000 * 10; // 10 seconds
 
 let reloadDataInterval: NodeJS.Timer | null = null;
 
@@ -38,37 +38,40 @@ export const App: React.FC = () => {
 
   if (!conditions) return <>Loading data...</>;
 
-  const curAvg = convertToKnots(conditions.wind_speed_avg_last_2_min);
+  const curAvg = convertToKnots(conditions.wind_speed_last);
   const curHi = convertToKnots(conditions.wind_speed_hi_last_2_min);
 
   const lastAvg = convertToKnots(conditions.wind_speed_avg_last_10_min);
   const lastHi = convertToKnots(conditions.wind_speed_hi_last_10_min);
 
-  const windDir = conditions.wind_dir_scalar_avg_last_2_min;
+  const windDir = conditions.wind_dir_last;
 
   const formatDate = (timestamp?: number) => {
     if (!timestamp) return null;
-
     return new Date(timestamp * 1000).toLocaleString();
   };
 
   const formatDirection = (deg: number) => {
-    if (deg >= 348.75 || deg < 11.25) return "N";
-    if (deg >= 11.25 && deg < 33.75) return "NNE";
-    if (deg >= 33.75 && deg < 56.25) return "NE";
-    if (deg >= 56.25 && deg < 78.75) return "ENE";
-    if (deg >= 78.75 && deg < 101.25) return "E";
-    if (deg >= 101.25 && deg < 123.75) return "ESE";
-    if (deg >= 123.75 && deg < 146.25) return "SE";
-    if (deg >= 146.25 && deg < 168.75) return "SSE";
-    if (deg >= 168.75 && deg < 191.25) return "S";
-    if (deg >= 191.25 && deg < 213.75) return "SSW";
-    if (deg >= 213.75 && deg < 236.25) return "SW";
-    if (deg >= 236.25 && deg < 258.75) return "WSW";
-    if (deg >= 258.75 && deg < 281.25) return "W";
-    if (deg >= 281.25 && deg < 303.75) return "WNW";
-    if (deg >= 303.75 && deg < 326.25) return "NW";
-    if (deg >= 326.25 && deg < 348.75) return "NNW";
+    const between = (input: number) => (start: number, stop: number) =>
+      input >= start && input < stop;
+    const degBetween = between(deg);
+
+    if (degBetween(11.25, 33.75)) return "NNE";
+    if (degBetween(33.75, 56.25)) return "NE";
+    if (degBetween(56.25, 78.75)) return "ENE";
+    if (degBetween(78.75, 101.25)) return "E";
+    if (degBetween(101.25, 123.75)) return "ESE";
+    if (degBetween(123.75, 146.25)) return "SE";
+    if (degBetween(146.25, 168.75)) return "SSE";
+    if (degBetween(168.75, 191.25)) return "S";
+    if (degBetween(191.25, 213.75)) return "SSW";
+    if (degBetween(213.75, 236.25)) return "SW";
+    if (degBetween(236.25, 258.75)) return "WSW";
+    if (degBetween(258.75, 281.25)) return "W";
+    if (degBetween(281.25, 303.75)) return "WNW";
+    if (degBetween(303.75, 326.25)) return "NW";
+    if (degBetween(326.25, 348.75)) return "NNW";
+    else return "N";
   };
 
   return (
@@ -83,6 +86,7 @@ export const App: React.FC = () => {
           transform: `rotate(${windDir}deg)`,
         }}
       />
+
       <div style={{ fontSize: "18pt", marginTop: "14px" }}>
         <strong title={`${windDir}°`}>{formatDirection(windDir)}</strong>{" "}
         <strong>{curAvg}</strong>
@@ -102,7 +106,7 @@ export const App: React.FC = () => {
 
       <div style={{ marginTop: "10px", fontSize: "8pt", color: "#999" }}>
         Last updated {formatDate(lastUpdated)}
-        <div style={{ marginTop: "10px" }}>
+        <div style={{ marginTop: "0px" }}>
           Data provided by{" "}
           <a
             href="https://palmbeach.weatherstem.com/fswndelraynorth"
