@@ -1,5 +1,5 @@
 const DATA_URL =
-  "//cdn.weatherstem.com/dashboard/data/dynamic/weatherlinklive/001D0A7176C7.json";
+  "https://cdn.weatherstem.com/dashboard/data/dynamic/weatherlinklive/001D0A7176C7.json";
 
 export type Conditions = {
   data_structure_type: 1;
